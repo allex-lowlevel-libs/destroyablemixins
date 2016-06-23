@@ -57,10 +57,5 @@ module.exports = function(inherit, Destroyable) {
   ComplexDestroyable.prototype.dyingCondition = function(){
     return true;
   };
-  //just for debugging
-  ComplexDestroyable.prototype.__cleanUp = function(){
-    //console.log(this.__id,'__cleanUp');
-    Destroyable.prototype.__cleanUp.call(this);
-  };
   return ComplexDestroyable;
 };
