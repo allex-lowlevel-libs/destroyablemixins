@@ -29,10 +29,14 @@ module.exports = function (dummyFunc, _EventEmitter) {
   
   function Destroyable(){
     this.destroyed = new _EventEmitter();
+    this.__dyingException = null;
   }
   Destroyable.prototype.destroy = function(exception){
-    var d = this.destroyed;
+    var d = this.destroyed, e;
     if(!d){return;}
+    if (exception && !this.__dyingException) {
+      this.__dyingException = exception;
+    }
     if(('function'===typeof this.shouldDie) && !this.shouldDie()){
       return;
     }
@@ -43,10 +47,17 @@ module.exports = function (dummyFunc, _EventEmitter) {
     if ('function' != typeof d.fire) {
       console.log('dafuq is', d, '?');
     }
-    d.fire(exception);
-    d.destruct();
+    if (this.__dyingException) {
+      e = this.__dyingException;
+      this.__dyingException = null;
+      d.fire(e);
+    } else {
+      d.fire();
+    }
+    d.destroy();
     d = null;
     this.__cleanUp();
+    this.__dyingException = null;
   };
   Destroyable.prototype.extendTo = function(obj){
     new DestroyableExtender(this,obj);
