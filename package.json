@@ -1,6 +1,6 @@
 {
   "name": "allex_destroyablemixinslowlevellib",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "JavaScript Destroyable mixins",
   "main": "index.js",
   "scripts": {

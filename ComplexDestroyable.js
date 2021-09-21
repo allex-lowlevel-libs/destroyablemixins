@@ -4,6 +4,7 @@ module.exports = function(inherit, Destroyable, _EventEmitter) {
     //this.__id = ++__id;
     Destroyable.call(this);
     this.aboutToDie = new _EventEmitter();
+    this.initialException = null;
     //console.log(process.pid, this.__id, 'created', this.destroyed);
   };
   inherit(ComplexDestroyable,Destroyable);
@@ -11,17 +12,22 @@ module.exports = function(inherit, Destroyable, _EventEmitter) {
     if (!this.destroyed) {
       return;
     }
+    if (!this.initialException) {
+      this.initialException = exception;
+    }
+    exception = exception || this.initialException;
     var d = this.aboutToDie;
     this.aboutToDie = null;
     if(d){
       //console.log(this.__id,'was not dying before, startTheDyingProcedure');
       d.fire(this);
       d.destroy();
-      this.startTheDyingProcedure();
+      this.startTheDyingProcedure(exception);
     }
     if (this.shouldDie()) {
+      this.initialException = null;
       //console.log(process.pid, this.__id, 'ComplexDestroyable dying', this.destroyed);
-      if (arguments.length) {
+      if (exception) {
         Destroyable.prototype.destroy.call(this, exception);
       } else {
         Destroyable.prototype.destroy.call(this);
@@ -54,7 +60,7 @@ module.exports = function(inherit, Destroyable, _EventEmitter) {
       this.destroy();
     }
   };
-  ComplexDestroyable.prototype.startTheDyingProcedure = function(){
+  ComplexDestroyable.prototype.startTheDyingProcedure = function(exception){
   };
   ComplexDestroyable.prototype.dyingCondition = function(){
     return true;
