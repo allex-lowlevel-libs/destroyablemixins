@@ -32,7 +32,7 @@ module.exports = function (dummyFunc, _EventEmitter) {
     this.__dyingException = null;
   }
   Destroyable.prototype.destroy = function(exception){
-    var d = this.destroyed, e;
+    var d = this.destroyed;
     if(!d){return;}
     if (exception && !this.__dyingException) {
       this.__dyingException = exception;
@@ -48,9 +48,7 @@ module.exports = function (dummyFunc, _EventEmitter) {
       console.log('dafuq is', d, '?');
     }
     if (this.__dyingException) {
-      e = this.__dyingException;
-      this.__dyingException = null;
-      d.fire(e);
+      d.fire(this.__dyingException);
     } else {
       d.fire();
     }

@@ -25,6 +25,7 @@ module.exports = function(inherit, Destroyable, _EventEmitter) {
       this.startTheDyingProcedure(exception);
     }
     if (this.shouldDie()) {
+      this.__dyingException = this.__dyingException || this.initialException;
       this.initialException = null;
       //console.log(process.pid, this.__id, 'ComplexDestroyable dying', this.destroyed);
       if (exception) {
